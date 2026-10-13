@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="272" viewBox="0 0 1100 272" role="img" aria-label="BFGS technology-practice research pipeline">
+<defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#1D2733" flood-opacity=".11"/></filter><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0 L9 3 L0 6 Z" fill="#8091A5"/></marker></defs>
+<rect x="0" y="0" width="1100" height="272" rx="18" fill="#F8FAFC"/>
+<text x="37" y="39" fill="#1D2733" font-family="Arial, sans-serif" font-size="20" font-weight="700">RESEARCH PIPELINE</text>
+<text x="37" y="63" fill="#64748B" font-family="Arial, sans-serif" font-size="12">One mathematical task · two research reports · one reproducible desktop laboratory</text>
+<g filter="url(#shadow)" font-family="Arial,sans-serif">
+<rect x="38" y="97" width="224" height="117" rx="14" fill="white" stroke="#CCD7E5"/><rect x="38" y="97" width="224" height="5" rx="3" fill="#356FAF"/>
+<text x="56" y="135" font-size="15" font-weight="700" fill="#214F79">01  Problem</text><text x="56" y="160" font-size="12" fill="#4A5A6B">Unconstrained minimization</text><text x="56" y="181" font-size="12" fill="#4A5A6B">BFGS inverse update</text>
+<rect x="303" y="97" width="224" height="117" rx="14" fill="white" stroke="#CCD7E5"/><rect x="303" y="97" width="224" height="5" rx="3" fill="#32838D"/>
+<text x="321" y="135" font-size="15" font-weight="700" fill="#276F76">02  Scientific core</text><text x="321" y="160" font-size="12" fill="#4A5A6B">Solver + line search</text><text x="321" y="181" font-size="12" fill="#4A5A6B">Standard / weighted update</text>
+<rect x="568" y="97" width="224" height="117" rx="14" fill="white" stroke="#CCD7E5"/><rect x="568" y="97" width="224" height="5" rx="3" fill="#7559B2"/>
+<text x="586" y="135" font-size="15" font-weight="700" fill="#62449E">03  Experiments</text><text x="586" y="160" font-size="12" fill="#4A5A6B">246 original + 105 targeted</text><text x="586" y="181" font-size="12" fill="#4A5A6B">Diagnostics + baseline</text>
+<rect x="833" y="97" width="228" height="117" rx="14" fill="white" stroke="#CCD7E5"/><rect x="833" y="97" width="228" height="5" rx="3" fill="#438B64"/>
+<text x="851" y="135" font-size="15" font-weight="700" fill="#377754">04  Deliverables</text><text x="851" y="160" font-size="12" fill="#4A5A6B">Chinese / Russian reports</text><text x="851" y="181" font-size="12" fill="#4A5A6B">BFGS-Lab portable package</text>
+</g>
+<path d="M262 155 H296" stroke="#8091A5" stroke-width="2.4" marker-end="url(#arrow)"/><path d="M527 155 H560" stroke="#8091A5" stroke-width="2.4" marker-end="url(#arrow)"/><path d="M792 155 H825" stroke="#8091A5" stroke-width="2.4" marker-end="url(#arrow)"/>
+<text x="38" y="246" fill="#64748B" font-family="Arial,sans-serif" font-size="11">Mathematical claims and numerical observations are reported separately; no cross-platform bitwise equivalence is assumed.</text>
+</svg>
