@@ -189,66 +189,29 @@ $$
 
 **B-01｜正定三对角二次函数。**
 
-$$
-\begin{aligned}
-f(x)&=\tfrac12x^{\mathrm T}Qx-(Q\mathbf{1})^{\mathrm T}x+c,\\
-Q_{ij}&=\begin{cases}
-4,&i=j,\\
-1,&|i-j|=1,\\
-0,&\text{otherwise}.
-\end{cases}
-\end{aligned}
-$$
-
-其中 $\displaystyle c$ 是常数； $\displaystyle Q$ 对称正定，故极小点为 $\displaystyle \mathbf{1}$。
+目标函数为 $\displaystyle f(x)=\frac12x^{\mathrm T}Qx-(Q\mathbf{1})^{\mathrm T}x+c$。其中 $\displaystyle Q=(q_{ij})$，主对角元 $\displaystyle q_{ii}=4$，紧邻副对角元 $\displaystyle q_{i,i+1}=q_{i+1,i}=1$（ $\displaystyle 1\leqslant i<n$），其余矩阵元为零。 $\displaystyle c$ 为常数； $\displaystyle Q$ 对称正定，因此 $\displaystyle x^{\ast}=\mathbf{1}$。
 
 **B-02｜可调条件数的对角二次函数。**
 
-$$
-\begin{aligned}
-f(x)&=\tfrac12\sum_{i=1}^{n}d_i(x_i-1)^2,\\
-d_i&=\kappa^{\frac{i-1}{n-1}}
-\quad(n\ge2),\qquad \kappa\ge1.
-\end{aligned}
-$$
-
-当 $\displaystyle n=1$ 时定义 $\displaystyle d_1=1$。 $\displaystyle \kappa$ 是目标 Hessian 的条件数参数。
+目标函数为 $\displaystyle f(x)=\frac12\sum_{i=1}^{n}d_i(x_i-1)^2$。当 $\displaystyle n\geqslant2$ 时， $\displaystyle d_i=\kappa^{(i-1)/(n-1)}$，其中 $\displaystyle \kappa\geqslant1$；当 $\displaystyle n=1$ 时，规定 $\displaystyle d_1=1$。参数 $\displaystyle \kappa$ 控制 Hessian 的条件数。
 
 **B-03｜二维 Rosenbrock 函数。**
 
-$$
-f(x_1,x_2)=100(x_2-x_1^2)^2+(1-x_1)^2.
-$$
+令 $\displaystyle u=x_2-x_1^2$、 $\displaystyle v=1-x_1$，则 $\displaystyle f(x_1,x_2)=100u^2+v^2$。极小点为 $\displaystyle (1,1)$。
 
 **B-04｜二维 Himmelblau 函数。**
 
-$$
-f(x_1,x_2)=(x_1^2+x_2-11)^2+(x_1+x_2^2-7)^2.
-$$
-
-程序使用四个已知极小点，内部编号为 M1–M4；其精确实现与顺序以 `objectives.py` 为准。
+令 $\displaystyle u=x_1^2+x_2-11$、 $\displaystyle v=x_1+x_2^2-7$，则 $\displaystyle f(x_1,x_2)=u^2+v^2$。程序使用四个已知极小点，内部编号为 M1–M4；其精确坐标与编号顺序以 `objectives.py` 为准。
 
 **B-05｜分块 Rosenbrock 函数。**
 
-$$
-\begin{aligned}
-f(x)=\sum_{j=1}^{n/2}\bigl[
-&100(x_{2j}-x_{2j-1}^{2})^{2}\\
-&+(1-x_{2j-1})^{2}\bigr].
-\end{aligned}
-$$
+对每一块令 $\displaystyle a_j=x_{2j-1}$、 $\displaystyle b_j=x_{2j}$、 $\displaystyle r_j=b_j-a_j^2$，再设 $\displaystyle \varphi_j=100r_j^2+(1-a_j)^2$，则 $\displaystyle f(x)=\sum_{j=1}^{n/2}\varphi_j$，其中 $\displaystyle n$ 为正偶数。
 
-**B-06｜分块 Powell singular 函数。** 对每一块定义 $\displaystyle a_j=x_{4j-3}$、 $\displaystyle b_j=x_{4j-2}$、 $\displaystyle c_j=x_{4j-1}$、 $\displaystyle d_j=x_{4j}$，则
+**B-06｜分块 Powell singular 函数。**
 
-$$
-\begin{aligned}
-f(x)=\sum_{j=1}^{n/4}\bigl[
-&(a_j+10b_j)^2+5(c_j-d_j)^2\\
-&+(b_j-2c_j)^4+10(a_j-d_j)^4\bigr].
-\end{aligned}
-$$
+对每一块令 $\displaystyle a_j=x_{4j-3}$、 $\displaystyle b_j=x_{4j-2}$、 $\displaystyle c_j=x_{4j-1}$、 $\displaystyle d_j=x_{4j}$。再定义 $\displaystyle u_j=a_j+10b_j$、 $\displaystyle v_j=c_j-d_j$、 $\displaystyle w_j=b_j-2c_j$、 $\displaystyle t_j=a_j-d_j$，以及 $\displaystyle P_j=u_j^2+5v_j^2$、 $\displaystyle R_j=w_j^4+10t_j^4$。于是 $\displaystyle f(x)=\sum_{j=1}^{n/4}(P_j+R_j)$，其中 $\displaystyle n$ 为 4 的正整数倍。
 
-该目标函数在 $\displaystyle x^*=\mathbf{0}$ 处达到最小值，但 $\displaystyle \nabla^2f(\mathbf{0})$ 奇异；因此它与 Hessian 正定的局部理论假设并不等同。代码中每类函数的梯度、Hessian、默认参数与已知极小点以 `app/src/s6_bfgs/objectives.py` 为准。
+该目标函数在 $\displaystyle x^{\ast}=\mathbf{0}$ 处达到最小值，但 $\displaystyle \nabla^2f(\mathbf{0})$ 奇异；因此它与 Hessian 正定的局部理论假设并不等同。六类函数的梯度、Hessian、默认参数与已知极小点以 `app/src/s6_bfgs/objectives.py` 为准。
 
 </details>
 
