@@ -96,16 +96,16 @@ H_{k+1}={}&H_k
 \end{aligned}
 $$
 
-其中 **初始点 $x_0$ 与初始矩阵 $H_0$ 由用户在程序启动时给定**；题目将 $\alpha_k=1$ 作为常见的基准步长，要求在具有已知局部极小点的经典测试函数上检验算法。$H_k$ 近似逆 Hessian 矩阵，$z_k$ 在研究报告中改记为 $s_k$，二者指同一位移向量。
+其中 **初始点 $\displaystyle x_0$ 与初始矩阵 $\displaystyle H_0$ 由用户在程序启动时给定**；题目将 $\displaystyle \alpha_k=1$ 作为常见的基准步长，要求在具有已知局部极小点的经典测试函数上检验算法。$\displaystyle H_k$ 近似逆 Hessian 矩阵，$\displaystyle z_k$ 在研究报告中改记为 $\displaystyle s_k$，二者指同一位移向量。
 
 ### 1.2 教师规定的四项研究任务
 
 | 原始要求 | 本项目对应研究内容 | 论文定位 |
 |:---|:---|:---|
-| **局部收敛性** | 研究 $x_0$ 距已知极小点 $x^*$ 的远近、$H_0$ 与 $[\nabla^2f(x^*)]^{-1}$ 的接近程度，及不同方向、几何条件的影响 | 第 2.5、4.4、4.7 节；F2 / F3 / RQ-S1 / RQ-S2 |
+| **局部收敛性** | 研究 $\displaystyle x_0$ 距已知极小点 $\displaystyle x^*$ 的远近、$\displaystyle H_0$ 与 $\displaystyle [\nabla^2f(x^*)]^{-1}$ 的接近程度，及不同方向、几何条件的影响 | 第 2.5、4.4、4.7 节；F2 / F3 / RQ-S1 / RQ-S2 |
 | **收敛速度** | 给出可核查的数值轨迹与速度诊断，区分有限精度证据和渐近超线性收敛的数学定理 | 第 2.5、4.8 节；F6 |
 | **修改更新矩阵** | 研究标准 BFGS 修正项的带权方案，以及割线条件和正定性是否依然保持 | 第 2.4、4.6 节；F5 / RQ-S6 |
-| **步长允许范围** | 比较 $\alpha_k=1$、其他固定步长与 Armijo/Wolfe 等线搜索，不将局部数值区间外推为普适结论 | 第 2.3、4.5 节；F4 |
+| **步长允许范围** | 比较 $\displaystyle \alpha_k=1$、其他固定步长与 Armijo/Wolfe 等线搜索，不将局部数值区间外推为普适结论 | 第 2.3、4.5 节；F4 |
 
 教师的原任务面向三人小组；本仓库发布的材料以**现存两份研究报告及软件的实际内容**为范围，不对未提供的团队分工作额外推断。
 
@@ -121,9 +121,9 @@ $$
 
 ### 2.1 从 Newton 方向到逆 Hessian 更新
 
-设 $g_k=\nabla f(x_k)$，$G_k=\nabla^2f(x_k)$，并取对称矩阵 $H_k\approx G_k^{-1}$。搜索方向为 $p_k=-H_kg_k$，新点为 $x_{k+1}=x_k+\alpha_k p_k$。当 $H_k\succ0$ 且 $g_k\ne0$ 时，$g_k^{\mathrm T}p_k=-g_k^{\mathrm T}H_kg_k<0$，因此 $p_k$ 是下降方向。
+设 $\displaystyle g_k=\nabla f(x_k)$，$\displaystyle G_k=\nabla^2f(x_k)$，并取对称矩阵 $\displaystyle H_k\approx G_k^{-1}$。搜索方向为 $\displaystyle p_k=-H_kg_k$，新点为 $\displaystyle x_{k+1}=x_k+\alpha_k p_k$。当 $\displaystyle H_k\succ0$ 且 $\displaystyle g_k\ne0$ 时，$\displaystyle g_k^{\mathrm T}p_k=-g_k^{\mathrm T}H_kg_k<0$，因此 $\displaystyle p_k$ 是下降方向。
 
-令 $s_k=x_{k+1}-x_k$，$y_k=g_{k+1}-g_k$，$\rho_k=(s_k^{\mathrm T}y_k)^{-1}$。标准逆 BFGS 的紧凑更新为
+令 $\displaystyle s_k=x_{k+1}-x_k$，$\displaystyle y_k=g_{k+1}-g_k$，$\displaystyle \rho_k=(s_k^{\mathrm T}y_k)^{-1}$。标准逆 BFGS 的紧凑更新为
 
 $$
 \begin{aligned}
@@ -133,7 +133,7 @@ H_{k+1}={}&(I-\rho_ks_ky_k^{\mathrm T})H_k
 \end{aligned}
 $$
 
-设 $r_k=s_k-H_ky_k$、$\delta_k=s_k^{\mathrm T}y_k$，则等价的展开更新是
+设 $\displaystyle r_k=s_k-H_ky_k$、$\displaystyle \delta_k=s_k^{\mathrm T}y_k$，则等价的展开更新是
 
 $$
 \begin{aligned}
@@ -143,11 +143,11 @@ H_{k+1}={}&H_k
 \end{aligned}
 $$
 
-在精确算术且分母非零时，上述更新满足**割线条件** $H_{k+1}y_k=s_k$。若 $H_k\succ0$ 且 $s_k^{\mathrm T}y_k>0$，标准 BFGS 更新保持正定性。采用下降方向和满足相应条件的 Wolfe 线搜索可以保证所需的正曲率；这并不意味着报告中所有实验都采用 Wolfe 搜索。
+在精确算术且分母非零时，上述更新满足**割线条件** $\displaystyle H_{k+1}y_k=s_k$。若 $\displaystyle H_k\succ0$ 且 $\displaystyle s_k^{\mathrm T}y_k>0$，标准 BFGS 更新保持正定性。采用下降方向和满足相应条件的 Wolfe 线搜索可以保证所需的正曲率；这并不意味着报告中所有实验都采用 Wolfe 搜索。
 
 ### 2.2 带权修正为何是独立研究对象
 
-令 $r=s-Hy$、$\delta=s^{\mathrm T}y\ne0$。报告研究如下实验性带权修正：
+令 $\displaystyle r=s-Hy$、$\displaystyle \delta=s^{\mathrm T}y\ne0$。报告研究如下实验性带权修正：
 
 $$
 \begin{aligned}
@@ -157,7 +157,7 @@ H_+^{(a,b)}={}&H
 \end{aligned}
 $$
 
-当 $a=b=1$ 时回到标准 BFGS。一般权重下，其割线残差可写成
+当 $\displaystyle a=b=1$ 时回到标准 BFGS。一般权重下，其割线残差可写成
 
 $$
 \begin{aligned}
@@ -175,12 +175,12 @@ $$
 
 | 测试编号 | 数学类型 | 允许维数 | 已知极小点 |
 |:---|:---|:---|:---|
-| **B-01** | 正定三对角二次函数 | $n\ge 1$ | $x^*=\mathbf{1}$ |
-| **B-02** | 可调整条件数的对角二次函数 | $n\ge 1$ | $x^*=\mathbf{1}$ |
-| **B-03** | 二维 Rosenbrock 函数 | $n=2$ | $x^*=(1,1)$ |
-| **B-04** | 二维 Himmelblau 函数 | $n=2$ | 四个已知局部极小点 |
-| **B-05** | 分块 Rosenbrock 函数 | $n$ 为正偶数 | $x^*=\mathbf{1}$ |
-| **B-06** | 分块 Powell singular 函数 | $n$ 为 4 的正整数倍 | $x^*=\mathbf{0}$ |
+| **B-01** | 正定三对角二次函数 | $\displaystyle n\ge 1$ | $\displaystyle x^*=\mathbf{1}$ |
+| **B-02** | 可调整条件数的对角二次函数 | $\displaystyle n\ge 1$ | $\displaystyle x^*=\mathbf{1}$ |
+| **B-03** | 二维 Rosenbrock 函数 | $\displaystyle n=2$ | $\displaystyle x^*=(1,1)$ |
+| **B-04** | 二维 Himmelblau 函数 | $\displaystyle n=2$ | 四个已知局部极小点 |
+| **B-05** | 分块 Rosenbrock 函数 | $\displaystyle n$ 为正偶数 | $\displaystyle x^*=\mathbf{1}$ |
+| **B-06** | 分块 Powell singular 函数 | $\displaystyle n$ 为 4 的正整数倍 | $\displaystyle x^*=\mathbf{0}$ |
 
 各函数的完整表达式及参数定义如下，保持与程序实现相同的数学约定。
 
@@ -200,7 +200,7 @@ Q_{ij}&=\begin{cases}
 \end{aligned}
 $$
 
-其中 $c$ 是常数；$Q$ 对称正定，故极小点为 $\mathbf{1}$。
+其中 $\displaystyle c$ 是常数；$\displaystyle Q$ 对称正定，故极小点为 $\displaystyle \mathbf{1}$。
 
 **B-02｜可调条件数的对角二次函数。**
 
@@ -212,7 +212,7 @@ d_i&=\kappa^{\frac{i-1}{n-1}}
 \end{aligned}
 $$
 
-当 $n=1$ 时定义 $d_1=1$。$\kappa$ 是目标 Hessian 的条件数参数。
+当 $\displaystyle n=1$ 时定义 $\displaystyle d_1=1$。$\displaystyle \kappa$ 是目标 Hessian 的条件数参数。
 
 **B-03｜二维 Rosenbrock 函数。**
 
@@ -238,7 +238,7 @@ f(x)=\sum_{j=1}^{n/2}\bigl[
 \end{aligned}
 $$
 
-**B-06｜分块 Powell singular 函数。** 对每一块定义 $a_j=x_{4j-3}$、$b_j=x_{4j-2}$、$c_j=x_{4j-1}$、$d_j=x_{4j}$，则
+**B-06｜分块 Powell singular 函数。** 对每一块定义 $\displaystyle a_j=x_{4j-3}$、$\displaystyle b_j=x_{4j-2}$、$\displaystyle c_j=x_{4j-1}$、$\displaystyle d_j=x_{4j}$，则
 
 $$
 \begin{aligned}
@@ -248,7 +248,7 @@ f(x)=\sum_{j=1}^{n/4}\bigl[
 \end{aligned}
 $$
 
-该目标函数在 $x^*=\mathbf{0}$ 处达到最小值，但 $\nabla^2f(\mathbf{0})$ 奇异；因此它与 Hessian 正定的局部理论假设并不等同。代码中每类函数的梯度、Hessian、默认参数与已知极小点以 `app/src/s6_bfgs/objectives.py` 为准。
+该目标函数在 $\displaystyle x^*=\mathbf{0}$ 处达到最小值，但 $\displaystyle \nabla^2f(\mathbf{0})$ 奇异；因此它与 Hessian 正定的局部理论假设并不等同。代码中每类函数的梯度、Hessian、默认参数与已知极小点以 `app/src/s6_bfgs/objectives.py` 为准。
 
 </details>
 
@@ -302,7 +302,7 @@ flowchart TD
 |:---|:---|---:|---:|:---|
 | F1 | 标准 BFGS 两种等价公式 | 38 | 10 | 紧凑式与展开式在有限精度下的实现一致性 |
 | F2 | 起点扰动与局部性 | 32 | 12 | 初始距离、方向与吸引域结构 |
-| F3 | 初始 $H_0$ 敏感性 | 24 | 10 | 近似矩阵、各向异性与问题结构 |
+| F3 | 初始 $\displaystyle H_0$ 敏感性 | 24 | 10 | 近似矩阵、各向异性与问题结构 |
 | F4 | 步长与线搜索 | 62 | 13 | Full / Fixed / Armijo / Wolfe / Strong Wolfe 等对比 |
 | F5 | 实验性带权更新 | 60 | 6 | 结构约束与 globalization 的交互 |
 | F6 | 重复运行与性能 | 30 | 10 | 运行稳定性、迭代及计算成本 |
@@ -333,10 +333,10 @@ flowchart TD
 | 补充方向 | 定向研究内容 | 应怎样理解 |
 |:---|:---|:---|
 | RQ-S1 | 相同距离、不同扰动方向 | 初值的局部数值表现不只是一个“半径”参数 |
-| RQ-S2 | 一般各向异性正定初始矩阵 | $H_0$ 的作用依赖问题、矩阵结构与吸引域 |
-| RQ-S3 | 规模增加，最高到 $n=200$ | 观察规模相关行为，不据此声称维数无关的收敛定理 |
+| RQ-S2 | 一般各向异性正定初始矩阵 | $\displaystyle H_0$ 的作用依赖问题、矩阵结构与吸引域 |
+| RQ-S3 | 规模增加，最高到 $\displaystyle n=200$ | 观察规模相关行为，不据此声称维数无关的收敛定理 |
 | RQ-S4 | 离散 conditioning 网格 | 工作量变化与最终成功/非成功状态并非简单单调关系 |
-| RQ-S5 | 起点 × $H_0$ × 线搜索 | 有限设计下的因素交互，并非普适参数排名 |
+| RQ-S5 | 起点 × $\displaystyle H_0$ × 线搜索 | 有限设计下的因素交互，并非普适参数排名 |
 | RQ-S6 | 更新权重 × 线搜索 | 带权方案的实验性成功表现依赖 globalization |
 
 重要的可核查例子：F1 的 19 对配对配置中，17 对终止状态相同；F2 的 24 个直接锚点组中，13 组的两个补充方向产生不同终止状态/成功分类；原 246 个运行的有限精度超线性诊断中，**3 个支持、69 个有尾段但不支持、174 个窗口不可用**。这些是特定数据集上的描述性结论，**不是全局收敛定理、统计泛化定理，也不是理论超线性收敛的证明**。
@@ -381,7 +381,7 @@ flowchart TD
 <a id="software"></a>
 ## 五、BFGS-Lab 桌面软件
 
-BFGS-Lab 是基于 **Tkinter/ttk + Matplotlib** 的本地桌面界面，并通过 adapter 使用现有 Python 科学核心。可配置预设/自定义 $x_0$ 与正定 $H_0$、多种步长或线搜索、标准/展开/带权更新，以及迭代历史、梯度范数、矩阵诊断、数据浏览、选定运行的本地复现和导出。
+BFGS-Lab 是基于 **Tkinter/ttk + Matplotlib** 的本地桌面界面，并通过 adapter 使用现有 Python 科学核心。可配置预设/自定义 $\displaystyle x_0$ 与正定 $\displaystyle H_0$、多种步长或线搜索、标准/展开/带权更新，以及迭代历史、梯度范数、矩阵诊断、数据浏览、选定运行的本地复现和导出。
 
 <div align="center">
 <table>
@@ -475,7 +475,7 @@ BFGS-Lab/
 1. 从 GitHub Release 下载 `BFGS_Lab_Portable_Software.zip`，完整解压到可写目录（例如独立的 `BFGS-Lab-Portable` 文件夹），**不可在压缩包预览状态下直接运行**。
 2. 确认 `BFGS-Lab.vbs`、`BFGS-Lab-Debug-Console.bat`、`runtime/`、`app/` 与 `THIRD_PARTY_NOTICES/` 位于同一级。
 3. 双击 **`BFGS-Lab.vbs`** 启动主界面；若无响应，运行 **`BFGS-Lab-Debug-Console.bat`** 获取报错。
-4. 在 Optimization 页面选择测试函数、输入 $x_0$ 和 $H_0$、设置更新方式/步长后启动运行；在 Visualizer、Reproduction、Experiment Data 等页面进一步检查。
+4. 在 Optimization 页面选择测试函数、输入 $\displaystyle x_0$ 和 $\displaystyle H_0$、设置更新方式/步长后启动运行；在 Visualizer、Reproduction、Experiment Data 等页面进一步检查。
 5. 新导出与本地复现结果保存在 `app/workspace/`；历史冻结数据位于 `app/outputs/` 与 `app/baseline/`，不应直接修改。
 
 **系统要求：**历史报告记载 Windows 11 x64 原生测试，便携环境为自带 Python 3.13 运行时和所需第三方包。Windows 10 x64 兼容性应在目标设备上另行确认；macOS/Linux **不能直接运行该 Windows 内置运行时**。若企业安全策略禁用 VBScript，可使用同包内的 `.bat` 调试入口，不应关闭系统防护功能。
@@ -572,7 +572,7 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 3. 将定向实验的终止状态比例解释为优化算法的总体失败概率。
 4. 默认修改后的带权更新依旧保持标准逆 BFGS 的割线条件和正定性。
 5. 默认 Windows 与 Linux 或不同 BLAS/CPU 平台出现逐字段或逐位一致的浮点输出。
-6. 根据最高 $n=200$ 的有限规模试验推出任意维数下的算法性能结论。
+6. 根据最高 $\displaystyle n=200$ 的有限规模试验推出任意维数下的算法性能结论。
 
 </details>
 
