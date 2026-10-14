@@ -96,13 +96,13 @@ H_{k+1}={}&H_k
 \end{aligned}
 $$
 
-其中 **初始点 $\displaystyle x_0$ 与初始矩阵 $\displaystyle H_0$ 由用户在程序启动时给定**；题目将 $\displaystyle \alpha_k=1$ 作为常见的基准步长，要求在具有已知局部极小点的经典测试函数上检验算法。$\displaystyle H_k$ 近似逆 Hessian 矩阵，$\displaystyle z_k$ 在研究报告中改记为 $\displaystyle s_k$，二者指同一位移向量。
+其中 **初始点 $\displaystyle x_0$ 与初始矩阵 $\displaystyle H_0$ 由用户在程序启动时给定**；题目将 $\displaystyle \alpha_k=1$ 作为常见的基准步长，要求在具有已知局部极小点的经典测试函数上检验算法。 $\displaystyle H_k$ 近似逆 Hessian 矩阵， $\displaystyle z_k$ 在研究报告中改记为 $\displaystyle s_k$，二者指同一位移向量。
 
 ### 1.2 教师规定的四项研究任务
 
 | 原始要求 | 本项目对应研究内容 | 论文定位 |
 |:---|:---|:---|
-| **局部收敛性** | 研究 $\displaystyle x_0$ 距已知极小点 $\displaystyle x^*$ 的远近、$\displaystyle H_0$ 与 $\displaystyle [\nabla^2f(x^*)]^{-1}$ 的接近程度，及不同方向、几何条件的影响 | 第 2.5、4.4、4.7 节；F2 / F3 / RQ-S1 / RQ-S2 |
+| **局部收敛性** | 研究 $\displaystyle x_0$ 距已知极小点 $\displaystyle x^*$ 的远近、 $\displaystyle H_0$ 与 $\displaystyle [\nabla^2f(x^*)]^{-1}$ 的接近程度，及不同方向、几何条件的影响 | 第 2.5、4.4、4.7 节；F2 / F3 / RQ-S1 / RQ-S2 |
 | **收敛速度** | 给出可核查的数值轨迹与速度诊断，区分有限精度证据和渐近超线性收敛的数学定理 | 第 2.5、4.8 节；F6 |
 | **修改更新矩阵** | 研究标准 BFGS 修正项的带权方案，以及割线条件和正定性是否依然保持 | 第 2.4、4.6 节；F5 / RQ-S6 |
 | **步长允许范围** | 比较 $\displaystyle \alpha_k=1$、其他固定步长与 Armijo/Wolfe 等线搜索，不将局部数值区间外推为普适结论 | 第 2.3、4.5 节；F4 |
@@ -121,9 +121,9 @@ $$
 
 ### 2.1 从 Newton 方向到逆 Hessian 更新
 
-设 $\displaystyle g_k=\nabla f(x_k)$，$\displaystyle G_k=\nabla^2f(x_k)$，并取对称矩阵 $\displaystyle H_k\approx G_k^{-1}$。搜索方向为 $\displaystyle p_k=-H_kg_k$，新点为 $\displaystyle x_{k+1}=x_k+\alpha_k p_k$。当 $\displaystyle H_k\succ0$ 且 $\displaystyle g_k\ne0$ 时，$\displaystyle g_k^{\mathrm T}p_k=-g_k^{\mathrm T}H_kg_k<0$，因此 $\displaystyle p_k$ 是下降方向。
+设 $\displaystyle g_k=\nabla f(x_k)$， $\displaystyle G_k=\nabla^2f(x_k)$，并取对称矩阵 $\displaystyle H_k\approx G_k^{-1}$。搜索方向为 $\displaystyle p_k=-H_kg_k$，新点为 $\displaystyle x_{k+1}=x_k+\alpha_k p_k$。当 $\displaystyle H_k\succ0$ 且 $\displaystyle g_k\ne0$ 时， $\displaystyle g_k^{\mathrm T}p_k=-g_k^{\mathrm T}H_kg_k<0$，因此 $\displaystyle p_k$ 是下降方向。
 
-令 $\displaystyle s_k=x_{k+1}-x_k$，$\displaystyle y_k=g_{k+1}-g_k$，$\displaystyle \rho_k=(s_k^{\mathrm T}y_k)^{-1}$。标准逆 BFGS 的紧凑更新为
+令 $\displaystyle s_k=x_{k+1}-x_k$， $\displaystyle y_k=g_{k+1}-g_k$， $\displaystyle \rho_k=(s_k^{\mathrm T}y_k)^{-1}$。标准逆 BFGS 的紧凑更新为
 
 $$
 \begin{aligned}
@@ -133,7 +133,7 @@ H_{k+1}={}&(I-\rho_ks_ky_k^{\mathrm T})H_k
 \end{aligned}
 $$
 
-设 $\displaystyle r_k=s_k-H_ky_k$、$\displaystyle \delta_k=s_k^{\mathrm T}y_k$，则等价的展开更新是
+设 $\displaystyle r_k=s_k-H_ky_k$、 $\displaystyle \delta_k=s_k^{\mathrm T}y_k$，则等价的展开更新是
 
 $$
 \begin{aligned}
@@ -147,7 +147,7 @@ $$
 
 ### 2.2 带权修正为何是独立研究对象
 
-令 $\displaystyle r=s-Hy$、$\displaystyle \delta=s^{\mathrm T}y\ne0$。报告研究如下实验性带权修正：
+令 $\displaystyle r=s-Hy$、 $\displaystyle \delta=s^{\mathrm T}y\ne0$。报告研究如下实验性带权修正：
 
 $$
 \begin{aligned}
@@ -200,7 +200,7 @@ Q_{ij}&=\begin{cases}
 \end{aligned}
 $$
 
-其中 $\displaystyle c$ 是常数；$\displaystyle Q$ 对称正定，故极小点为 $\displaystyle \mathbf{1}$。
+其中 $\displaystyle c$ 是常数； $\displaystyle Q$ 对称正定，故极小点为 $\displaystyle \mathbf{1}$。
 
 **B-02｜可调条件数的对角二次函数。**
 
@@ -212,7 +212,7 @@ d_i&=\kappa^{\frac{i-1}{n-1}}
 \end{aligned}
 $$
 
-当 $\displaystyle n=1$ 时定义 $\displaystyle d_1=1$。$\displaystyle \kappa$ 是目标 Hessian 的条件数参数。
+当 $\displaystyle n=1$ 时定义 $\displaystyle d_1=1$。 $\displaystyle \kappa$ 是目标 Hessian 的条件数参数。
 
 **B-03｜二维 Rosenbrock 函数。**
 
@@ -238,7 +238,7 @@ f(x)=\sum_{j=1}^{n/2}\bigl[
 \end{aligned}
 $$
 
-**B-06｜分块 Powell singular 函数。** 对每一块定义 $\displaystyle a_j=x_{4j-3}$、$\displaystyle b_j=x_{4j-2}$、$\displaystyle c_j=x_{4j-1}$、$\displaystyle d_j=x_{4j}$，则
+**B-06｜分块 Powell singular 函数。** 对每一块定义 $\displaystyle a_j=x_{4j-3}$、 $\displaystyle b_j=x_{4j-2}$、 $\displaystyle c_j=x_{4j-1}$、 $\displaystyle d_j=x_{4j}$，则
 
 $$
 \begin{aligned}
