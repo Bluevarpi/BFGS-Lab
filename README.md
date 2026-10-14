@@ -31,7 +31,7 @@
 ---
 
 <div align="center">
-  <img src="./assets/readme/research-pipeline.svg" width="1050" alt="从布达克教师的BFGS任务到数学核心、科学实验与双语论文软件成果的研究流程">
+  <img src="./assets/readme/research-pipeline.svg" width="100%" alt="从布达克教师的BFGS任务到数学核心、科学实验与双语论文软件成果的研究流程">
 </div>
 
 <a id="overview"></a>
@@ -78,10 +78,21 @@ $$
 
 $$
 \begin{aligned}
-x_{k+1}&=x_k-\alpha_k H_k f'(x_k),\\
-z_k&=x_{k+1}-x_k,\qquad y_k=f'(x_{k+1})-f'(x_k),\\
-H_{k+1}&=H_k+\frac{(z_k-H_ky_k)z_k^{\mathrm T}+z_k(z_k-H_ky_k)^{\mathrm T}}{z_k^{\mathrm T}y_k}
--\frac{y_k^{\mathrm T}(z_k-H_ky_k)}{(z_k^{\mathrm T}y_k)^2}z_kz_k^{\mathrm T}.
+x_{k+1}&=x_k-\alpha_kH_kf'(x_k),\\
+z_k&=x_{k+1}-x_k,\\
+y_k&=f'(x_{k+1})-f'(x_k).
+\end{aligned}
+$$
+
+原题的逆 Hessian 近似更新式可等价地分行书写为
+
+$$
+\begin{aligned}
+H_{k+1}={}&H_k
++\frac{(z_k-H_ky_k)z_k^{\mathrm T}}{z_k^{\mathrm T}y_k}\\
+&+\frac{z_k(z_k-H_ky_k)^{\mathrm T}}{z_k^{\mathrm T}y_k}\\
+&-\frac{y_k^{\mathrm T}(z_k-H_ky_k)}{(z_k^{\mathrm T}y_k)^2}
+ z_kz_k^{\mathrm T}.
 \end{aligned}
 $$
 
@@ -115,47 +126,131 @@ $$
 令 $s_k=x_{k+1}-x_k$，$y_k=g_{k+1}-g_k$，$\rho_k=(s_k^{\mathrm T}y_k)^{-1}$。标准逆 BFGS 的紧凑更新为
 
 $$
-H_{k+1}=(I-\rho_ks_ky_k^{\mathrm T})H_k(I-\rho_ky_ks_k^{\mathrm T})+\rho_ks_ks_k^{\mathrm T}.
+\begin{aligned}
+H_{k+1}={}&(I-\rho_ks_ky_k^{\mathrm T})H_k
+(I-\rho_ky_ks_k^{\mathrm T})\\
+&+\rho_ks_ks_k^{\mathrm T}.
+\end{aligned}
 $$
 
 设 $r_k=s_k-H_ky_k$、$\delta_k=s_k^{\mathrm T}y_k$，则等价的展开更新是
 
 $$
-H_{k+1}=H_k+\frac{r_ks_k^{\mathrm T}+s_kr_k^{\mathrm T}}{\delta_k}-\frac{y_k^{\mathrm T}r_k}{\delta_k^2}s_ks_k^{\mathrm T}.
+\begin{aligned}
+H_{k+1}={}&H_k
++\frac{r_ks_k^{\mathrm T}+s_kr_k^{\mathrm T}}{\delta_k}\\
+&-\frac{y_k^{\mathrm T}r_k}{\delta_k^2}s_ks_k^{\mathrm T}.
+\end{aligned}
 $$
 
 在精确算术且分母非零时，上述更新满足**割线条件** $H_{k+1}y_k=s_k$。若 $H_k\succ0$ 且 $s_k^{\mathrm T}y_k>0$，标准 BFGS 更新保持正定性。采用下降方向和满足相应条件的 Wolfe 线搜索可以保证所需的正曲率；这并不意味着报告中所有实验都采用 Wolfe 搜索。
 
 ### 2.2 带权修正为何是独立研究对象
 
-报告研究实验性修正
+令 $r=s-Hy$、$\delta=s^{\mathrm T}y\ne0$。报告研究如下实验性带权修正：
 
 $$
-H_+^{(a,b)}=H+a\frac{rs^{\mathrm T}+sr^{\mathrm T}}{s^{\mathrm T}y}-b\frac{y^{\mathrm T}r}{(s^{\mathrm T}y)^2}ss^{\mathrm T},\quad r=s-Hy.
+\begin{aligned}
+H_+^{(a,b)}={}&H
++a\frac{rs^{\mathrm T}+sr^{\mathrm T}}{\delta}\\
+&-b\frac{y^{\mathrm T}r}{\delta^2}ss^{\mathrm T}.
+\end{aligned}
 $$
 
 当 $a=b=1$ 时回到标准 BFGS。一般权重下，其割线残差可写成
 
 $$
-H_+^{(a,b)}y-s=(a-1)r+(a-b)\frac{y^{\mathrm T}r}{s^{\mathrm T}y}s.
+\begin{aligned}
+H_+^{(a,b)}y-s
+={}&(a-1)r\\
+&+(a-b)\frac{y^{\mathrm T}r}{\delta}s.
+\end{aligned}
 $$
 
 因此，非标准权重**一般不保留**标准 BFGS 的割线条件和正定性保证。软件中将其作为需要诊断的实验方案，而不是未经证明的等价 BFGS 方法。
 
 ### 2.3 六类测试函数与已知最小点
 
-程序中六类 benchmark 的数学对象由 `app/src/s6_bfgs/objectives.py` 定义；其目的不是用成功比例代替理论，而是利用已知极小点和解析梯度/ Hessian 核验更新算法。
+程序中六类 benchmark 的数学对象由 `app/src/s6_bfgs/objectives.py` 定义；其目的不是用成功比例代替理论，而是利用已知极小点和解析梯度与 Hessian 核验更新算法。
 
-| 函数 | 实际目标函数或构造 | 维数要求与已知最小点 |
-|:---|:---|:---|
-| **B-01** | 正定三对角二次型 $f(x)=\frac12x^{\mathrm T}Qx-(Q\mathbf 1)^{\mathrm T}x+c$，$Q$ 主对角为 4、紧邻副对角为 1 | $n\geqslant1$；$x^*=\mathbf1$ |
-| **B-02** | 可调整条件数的对角二次型 $f(x)=\frac12\sum_i d_i(x_i-1)^2$，$d_i$ 按几何比率分布 | $n\geqslant1$；$x^*=\mathbf1$ |
-| **B-03** | Rosenbrock：$100(x_2-x_1^2)^2+(1-x_1)^2$ | $n=2$；$x^*=(1,1)$ |
-| **B-04** | Himmelblau：$(x_1^2+x_2-11)^2+(x_1+x_2^2-7)^2$ | $n=2$；四个已知局部极小点 |
-| **B-05** | 分块扩展 Rosenbrock：$\sum_j[100(x_{2j}-x_{2j-1}^2)^2+(1-x_{2j-1})^2]$ | $n$ 为正偶数；$x^*=\mathbf1$ |
-| **B-06** | 分块 Powell singular：$\sum_j[(a+10b)^2+5(c-d)^2+(b-2c)^4+10(a-d)^4]$ | $n$ 为 4 的正整数倍；$x^*=0$，最优点附近 Hessian 可能退化 |
+| 测试编号 | 数学类型 | 允许维数 | 已知极小点 |
+|:---|:---|:---|:---|
+| **B-01** | 正定三对角二次函数 | $n\ge 1$ | $x^*=\mathbf{1}$ |
+| **B-02** | 可调整条件数的对角二次函数 | $n\ge 1$ | $x^*=\mathbf{1}$ |
+| **B-03** | 二维 Rosenbrock 函数 | $n=2$ | $x^*=(1,1)$ |
+| **B-04** | 二维 Himmelblau 函数 | $n=2$ | 四个已知局部极小点 |
+| **B-05** | 分块 Rosenbrock 函数 | $n$ 为正偶数 | $x^*=\mathbf{1}$ |
+| **B-06** | 分块 Powell singular 函数 | $n$ 为 4 的正整数倍 | $x^*=\mathbf{0}$ |
 
-这里的 $a,b,c,d$ 是 B-06 每一块的四个相邻坐标；B-02 的精确谱参数、B-04 四个极小点的内部编号以及所有 benchmark-instance ID 请以冻结配置和源码为准。**B-06 的四次项并不意味着它必然是非凸目标**；该实例的曲率退化与数值终止行为应区别讨论。
+各函数的完整表达式及参数定义如下，保持与程序实现相同的数学约定。
+
+<details>
+<summary><strong>展开 B-01–B-06 的完整函数表达式与参数</strong></summary>
+
+**B-01｜正定三对角二次函数。**
+
+$$
+\begin{aligned}
+f(x)&=\tfrac12x^{\mathrm T}Qx-(Q\mathbf{1})^{\mathrm T}x+c,\\
+Q_{ij}&=\begin{cases}
+4,&i=j,\\
+1,&|i-j|=1,\\
+0,&\text{otherwise}.
+\end{cases}
+\end{aligned}
+$$
+
+其中 $c$ 是常数；$Q$ 对称正定，故极小点为 $\mathbf{1}$。
+
+**B-02｜可调条件数的对角二次函数。**
+
+$$
+\begin{aligned}
+f(x)&=\tfrac12\sum_{i=1}^{n}d_i(x_i-1)^2,\\
+d_i&=\kappa^{\frac{i-1}{n-1}}
+\quad(n\ge2),\qquad \kappa\ge1.
+\end{aligned}
+$$
+
+当 $n=1$ 时定义 $d_1=1$。$\kappa$ 是目标 Hessian 的条件数参数。
+
+**B-03｜二维 Rosenbrock 函数。**
+
+$$
+f(x_1,x_2)=100(x_2-x_1^2)^2+(1-x_1)^2.
+$$
+
+**B-04｜二维 Himmelblau 函数。**
+
+$$
+f(x_1,x_2)=(x_1^2+x_2-11)^2+(x_1+x_2^2-7)^2.
+$$
+
+程序使用四个已知极小点，内部编号为 M1–M4；其精确实现与顺序以 `objectives.py` 为准。
+
+**B-05｜分块 Rosenbrock 函数。**
+
+$$
+\begin{aligned}
+f(x)=\sum_{j=1}^{n/2}\bigl[
+&100(x_{2j}-x_{2j-1}^{2})^{2}\\
+&+(1-x_{2j-1})^{2}\bigr].
+\end{aligned}
+$$
+
+**B-06｜分块 Powell singular 函数。** 对每一块定义 $a_j=x_{4j-3}$、$b_j=x_{4j-2}$、$c_j=x_{4j-1}$、$d_j=x_{4j}$，则
+
+$$
+\begin{aligned}
+f(x)=\sum_{j=1}^{n/4}\bigl[
+&(a_j+10b_j)^2+5(c_j-d_j)^2\\
+&+(b_j-2c_j)^4+10(a_j-d_j)^4\bigr].
+\end{aligned}
+$$
+
+该目标函数在 $x^*=\mathbf{0}$ 处达到最小值，但 $\nabla^2f(\mathbf{0})$ 奇异；因此它与 Hessian 正定的局部理论假设并不等同。代码中每类函数的梯度、Hessian、默认参数与已知极小点以 `app/src/s6_bfgs/objectives.py` 为准。
+
+</details>
 
 ### 2.4 实际求解流程
 
@@ -200,7 +295,7 @@ flowchart TD
 ### 3.2 F1–F6：按研究问题分组
 
 <div align="center">
-<img src="./assets/readme/experiments-reference.svg" width="1020" alt="冻结Linux参考数据中F1至F6实验组成功终止比例及样本数">
+<img src="./assets/readme/experiments-reference.svg" width="100%" alt="冻结Linux参考数据中F1至F6实验组成功终止比例及样本数">
 </div>
 
 | 组别 | 主题 | 科学运行数 | 参考 Linux 中 success | 阅读重点 |
@@ -291,15 +386,15 @@ BFGS-Lab 是基于 **Tkinter/ttk + Matplotlib** 的本地桌面界面，并通�
 <div align="center">
 <table>
 <tr>
-  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-optimization.png" width="475" alt="真实中文版BFGS-Lab优化工作台截图"><br><strong>01 · Single Optimization</strong><br><sub>配置目标函数、初值、更新模式及终止诊断</sub></td>
-  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-diagnostics.png" width="475" alt="真实中文版BFGS-Lab梯度与目标函数诊断图截图"><br><strong>02 · Visualizer / Diagnostics</strong><br><sub>函数值、梯度、步长与二维轨迹</sub></td>
+  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-optimization.png" width="100%" alt="真实中文版BFGS-Lab优化工作台截图"><br><strong>01 · Single Optimization</strong><br><sub>配置目标函数、初值、更新模式及终止诊断</sub></td>
+  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-diagnostics.png" width="100%" alt="真实中文版BFGS-Lab梯度与目标函数诊断图截图"><br><strong>02 · Visualizer / Diagnostics</strong><br><sub>函数值、梯度、步长与二维轨迹</sub></td>
 </tr>
 <tr>
-  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-reproduction.png" width="475" alt="真实中文版BFGS-Lab原实验与基线复现页面"><br><strong>03 · Reproduction</strong><br><sub>按 Run ID 重放并与历史 baseline 比较</sub></td>
-  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-implementation.png" width="475" alt="真实中文版BFGS-Lab源代码对应展示页面"><br><strong>04 · Implementation</strong><br><sub>从算法步骤定位到真实 scientific core 源码</sub></td>
+  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-reproduction.png" width="100%" alt="真实中文版BFGS-Lab原实验与基线复现页面"><br><strong>03 · Reproduction</strong><br><sub>按 Run ID 重放并与历史 baseline 比较</sub></td>
+  <td width="50%" align="center" valign="top"><img src="./assets/readme/gui-implementation.png" width="100%" alt="真实中文版BFGS-Lab源代码对应展示页面"><br><strong>04 · Implementation</strong><br><sub>从算法步骤定位到真实 scientific core 源码</sub></td>
 </tr>
 </table>
-<sub>以上 4 幅截图取自本项目中文 LaTeX 工程所附真实 GUI 图像，不是示意性 UI 合成图。</sub>
+<sub>以上 4 幅截图取自本项目论文材料所附真实 GUI 图像，不是示意性 UI 合成图。</sub>
 </div>
 
 ### 核心能力
@@ -452,7 +547,7 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 
 需要人工执行时使用 `xelatex → biber main → xelatex → xelatex`，直至引用稳定。字体采用 TeX Live / 系统提供的 CMU 及 Fandol 兼容资源，不随仓库重新分发第三方字体。
 
-**构建核验：**两套各含 45 个编译依赖文件的源码工程均在 Linux TeX Live（XeLaTeX + Biber）环境下编译为 **33 页 PDF**；相关日志未见未定义引用或 overfull hbox。此项核验独立于 Windows 桌面程序的运行兼容性。
+**构建核验：**两套各含 45 个编译依赖文件的源码工程均已使用 XeLaTeX + Biber 编译为 **33 页 PDF**，未报告未定义引用。既有 Windows TeX Live 2025 验收记录中，俄文报告有一处约 **5.24 pt 的 `Overfull \hbox`** 排版警告，不影响 PDF 生成。此项核验独立于 Windows 桌面软件的运行兼容性。
 
 <a id="qa"></a>
 ## 九、发行 QA、可复现性与已知限制
@@ -461,11 +556,11 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 |:---|:---|:---|
 | 中文 / 俄文论文 | 各 33 页 | 双语研究报告及完整数学正文 |
 | 中文 / 俄文 LaTeX ZIP | 各 45 个直接编译文件 | 保留 `\lstinputlisting` 实际引用的代码段文件 |
-| LaTeX 构建 | 两份均成功生成 33 页 PDF | Linux XeLaTeX / Biber；跨设备字体配置可能导致排版差异 |
+| LaTeX 构建 | 两份均成功生成 33 页 PDF | Linux 与 Windows TeX Live 构建记录；俄文 Windows 构建含一处约 5.24 pt 的 `Overfull \hbox` 警告 |
 | 软件 ZIP 完整性 | ZIP CRC 检测 PASS | 包含运行时、GUI、核心、实验程序、历史数据及第三方许可证 |
 | 工作目录与缓存 | 不包含既往运行的临时工作数据或 Python 缓存 | `app/workspace/` 可由程序启动时创建 |
 | Linux 科学核心单项检查 | Original `S5R-0011` 与 Supplementary `SUPP-R0001` 均成功执行 | 不等于 Windows 内置 Python 测试或 351 次整批实验 |
-| Windows 11 GUI 与 351 单元运行 | 论文记载 Windows 11 原生实验已完成 | 历史结果不等于对所有设备的兼容性承诺；需按实际环境自行检验 |
+| Windows 11 GUI 与 351 个科学单元 | 已记录 7 项 GUI 功能验收；246 + 105 次实验均执行，0 driver error | Windows 11 x64 验收记录；不代表跨平台逐字段完全一致或对所有设备的兼容性承诺 |
 | 参考 Linux 复现 | 246/246（论文历史记录） | 不能改写成 351/351 跨平台逐字段一致 |
 | 第三方版权材料 | 随软件保留 `THIRD_PARTY_NOTICES/` | 各第三方组件适用其原有许可条款 |
 
@@ -480,6 +575,8 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 6. 根据最高 $n=200$ 的有限规模试验推出任意维数下的算法性能结论。
 
 </details>
+
+**已知界面限制：**Windows GUI 的语言切换功能可以使用，但 Settings 页“绘图质量”下拉框的当前取值可能沿用切换前的俄文标签；这是显示文本的刷新问题，不影响算法计算或历史实验结果。
 
 ### 安全、许可及出处
 
