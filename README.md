@@ -68,7 +68,7 @@
 
 ### 1.1 任务原文的数学内容
 
-教师给出的第一题标题为 **«ЗАДАНИЕ ТЕХНОЛОГИЧЕСКОЙ ПРАКТИКИ (BFGS)»**。要求开发一个利用 BFGS 拟牛顿方法求解无约束最小化问题的软件系统，即研究 $`\displaystyle \inf\nolimits_{x\in\mathbb{R}^{n}}f(x)`$。
+教师给出的第一题标题为 **«ЗАДАНИЕ ТЕХНОЛОГИЧЕСКОЙ ПРАКТИКИ (BFGS)»**。要求开发一个利用 BFGS 拟牛顿方法求解无约束最小化问题的软件系统，即研究 $\displaystyle \inf_{x\in\mathbb{R}^{n}}f(x)$。
 
 按照题目所采用的符号，迭代方案为 $`\displaystyle x_{k+1}=x_k-\alpha_kH_kf'(x_k)`$，其中位移向量 $`\displaystyle z_k=x_{k+1}-x_k`$，梯度差 $`\displaystyle y_k=f'(x_{k+1})-f'(x_k)`$。
 
