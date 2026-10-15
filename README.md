@@ -69,16 +69,18 @@
 ### 1.1 任务原文的数学内容
 
 教师给出的第一题标题为 **«ЗАДАНИЕ ТЕХНОЛОГИЧЕСКОЙ ПРАКТИКИ (BFGS)»**. 要求开发一个利用 BFGS 拟牛顿方法求解无约束最小化问题的软件系统，即研究
-$$
-\inf_{x\in\mathbb{R}^{n}}f(x).
-$$
+
+```math
+\displaystyle \inf_{x\in\mathbb{R}^{n}}f(x).
+```
 
 按照题目所采用的符号，迭代方案为 $`\displaystyle x_{k+1}=x_k-\alpha_kH_kf'(x_k)`$，其中位移向量 $`\displaystyle z_k=x_{k+1}-x_k`$，梯度差 $`\displaystyle y_k=f'(x_{k+1})-f'(x_k)`$. 
 
 原题的逆 Hessian 近似更新式可写成如下等价形式. 记残差向量 $`\displaystyle r_k=z_k-H_ky_k`$、曲率分母 $`\displaystyle \delta_k=z_k^{\mathrm T}y_k`$，则
-$$
-H_{k+1}=H_k+\frac{r_kz_k^{\mathrm T}+z_kr_k^{\mathrm T}}{\delta_k}-\frac{y_k^{\mathrm T}r_k}{\delta_k^{2}}z_kz_k^{\mathrm T}.
-$$
+
+```math
+\displaystyle H_{k+1}=H_k+\frac{r_kz_k^{\mathrm T}+z_kr_k^{\mathrm T}}{\delta_k}-\frac{y_k^{\mathrm T}r_k}{\delta_k^{2}}z_kz_k^{\mathrm T}.
+```
 
 其中，初始点 $`\displaystyle x_0`$ 与初始矩阵 $`\displaystyle H_0`$ <strong>由用户在程序启动时给定</strong>；题目将 $`\displaystyle \alpha_k=1`$ 作为常见的基准步长，要求在具有已知局部极小点的经典测试函数上检验算法.  $`\displaystyle H_k`$ 近似逆 Hessian 矩阵， $`\displaystyle z_k`$ 在研究报告中改记为 $`\displaystyle s_k`$，二者指同一位移向量. 
 
@@ -108,28 +110,32 @@ $$
 设 $`\displaystyle g_k=\nabla f(x_k)`$， $`\displaystyle G_k=\nabla^2f(x_k)`$，并取对称矩阵 $`\displaystyle H_k\approx G_k^{-1}`$. 搜索方向为 $`\displaystyle p_k=-H_kg_k`$，新点为 $`\displaystyle x_{k+1}=x_k+\alpha_k p_k`$. 当 $`\displaystyle H_k\succ0`$ 且 $`\displaystyle g_k\ne0`$ 时， $`\displaystyle g_k^{\mathrm T}p_k=-g_k^{\mathrm T}H_kg_k<0`$，因此 $`\displaystyle p_k`$ 是下降方向. 
 
 令 $`\displaystyle s_k=x_{k+1}-x_k`$， $`\displaystyle y_k=g_{k+1}-g_k`$， $`\displaystyle \rho_k=(s_k^{\mathrm T}y_k)^{-1}`$，并定义 $`\displaystyle V_k=I-\rho_ks_ky_k^{\mathrm T}`$. 标准逆 BFGS 的紧凑更新为
-$$
-H_{k+1}=V_kH_kV_k^{\mathrm T}+\rho_ks_ks_k^{\mathrm T}.
-$$
+
+```math
+\displaystyle H_{k+1}=V_kH_kV_k^{\mathrm T}+\rho_ks_ks_k^{\mathrm T}.
+```
 
 设 $`\displaystyle r_k=s_k-H_ky_k`$、 $`\displaystyle \delta_k=s_k^{\mathrm T}y_k`$，则等价的展开更新是
-$$
-H_{k+1}=H_k+\frac{r_ks_k^{\mathrm T}+s_kr_k^{\mathrm T}}{\delta_k}-\frac{y_k^{\mathrm T}r_k}{\delta_k^{2}}s_ks_k^{\mathrm T}.
-$$
+
+```math
+\displaystyle H_{k+1}=H_k+\frac{r_ks_k^{\mathrm T}+s_kr_k^{\mathrm T}}{\delta_k}-\frac{y_k^{\mathrm T}r_k}{\delta_k^{2}}s_ks_k^{\mathrm T}.
+```
 
 在精确算术且分母非零时，上述更新满足**割线条件** $`\displaystyle H_{k+1}y_k=s_k`$. 若 $`\displaystyle H_k\succ0`$ 且 $`\displaystyle s_k^{\mathrm T}y_k>0`$，标准 BFGS 更新保持正定性. 采用下降方向和满足相应条件的 Wolfe 线搜索可以保证所需的正曲率；这并不意味着报告中所有实验都采用 Wolfe 搜索. 
 
 ### 2.2 带权修正为何是独立研究对象
 
 令 $`\displaystyle r=s-Hy`$、 $`\displaystyle \delta=s^{\mathrm T}y\ne0`$. 报告研究如下实验性带权修正：
-$$
-H_+^{(a,b)}=H+a\frac{rs^{\mathrm T}+sr^{\mathrm T}}{\delta}-b\frac{y^{\mathrm T}r}{\delta^{2}}ss^{\mathrm T}.
-$$
+
+```math
+\displaystyle H_+^{(a,b)}=H+a\frac{rs^{\mathrm T}+sr^{\mathrm T}}{\delta}-b\frac{y^{\mathrm T}r}{\delta^{2}}ss^{\mathrm T}.
+```
 
 当 $`\displaystyle a=b=1`$ 时回到标准 BFGS. 一般权重下，其割线残差可写成
-$$
-H_+^{(a,b)}y-s=(a-1)r+(a-b)\frac{y^{\mathrm T}r}{\delta}s.
-$$
+
+```math
+\displaystyle H_+^{(a,b)}y-s=(a-1)r+(a-b)\frac{y^{\mathrm T}r}{\delta}s.
+```
 
 因此，非标准权重**一般不保留**标准 BFGS 的割线条件和正定性保证. 软件中将其作为需要诊断的实验方案，而不是未经证明的等价 BFGS 方法. 
 
