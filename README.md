@@ -61,39 +61,21 @@
 </table>
 </div>
 
-> **范围与发布说明：**本仓库是个人技术实践作品展示，并非学校或指导教师官方仓库。教师原始十页选题集用于识别研究来源；其全文 **不随本仓库重新公开分发**。以下原题介绍为依据选题集第 1 页撰写的中文释义，而不是声明教师材料获得开放许可。
+> <strong>范围与发布说明：</strong>本仓库是个人技术实践作品展示，并非学校或指导教师官方仓库。教师原始十页选题集用于识别研究来源；其全文 **不随本仓库重新公开分发**。以下原题介绍为依据选题集第 1 页撰写的中文释义，而不是声明教师材料获得开放许可。
 
 <a id="assignment"></a>
 ## 一、原始问题与完整任务描述
 
 ### 1.1 任务原文的数学内容
 
-教师给出的第一题标题为 **«ЗАДАНИЕ ТЕХНОЛОГИЧЕСКОЙ ПРАКТИКИ (BFGS)»**。要求开发一个利用 BFGS 拟牛顿方法求解无约束最小化问题的软件系统：
+教师给出的第一题标题为 **«ЗАДАНИЕ ТЕХНОЛОГИЧЕСКОЙ ПРАКТИКИ (BFGS)»**。要求开发一个利用 BFGS 拟牛顿方法求解无约束最小化问题的软件系统，即研究 $\displaystyle \inf_{x\in\mathbb{R}^{n}}f(x)$。
+
+按照题目所采用的符号，迭代方案为 $\displaystyle x_{k+1}=x_k-\alpha_kH_kf'(x_k)$，其中位移向量 $\displaystyle z_k=x_{k+1}-x_k$，梯度差 $\displaystyle y_k=f'(x_{k+1})-f'(x_k)$。
+
+原题的逆 Hessian 近似更新式可写成如下等价形式。记残差向量 $\displaystyle r_k=z_k-H_ky_k$、曲率分母 $\displaystyle \delta_k=z_k^{\mathrm T}y_k$，则
 
 $$
-\inf_{x\in\mathbb R^n} f(x).
-$$
-
-按照题目所采用的符号，迭代方案为
-
-$$
-\begin{aligned}
-x_{k+1}&=x_k-\alpha_kH_kf'(x_k),\\
-z_k&=x_{k+1}-x_k,\\
-y_k&=f'(x_{k+1})-f'(x_k).
-\end{aligned}
-$$
-
-原题的逆 Hessian 近似更新式可等价地分行书写为
-
-$$
-\begin{aligned}
-H_{k+1}={}&H_k
-+\frac{(z_k-H_ky_k)z_k^{\mathrm T}}{z_k^{\mathrm T}y_k}\\
-&+\frac{z_k(z_k-H_ky_k)^{\mathrm T}}{z_k^{\mathrm T}y_k}\\
-&-\frac{y_k^{\mathrm T}(z_k-H_ky_k)}{(z_k^{\mathrm T}y_k)^2}
- z_kz_k^{\mathrm T}.
-\end{aligned}
+H_{k+1}=H_k+\frac{r_kz_k^{\mathrm T}+z_kr_k^{\mathrm T}}{\delta_k}-\frac{y_k^{\mathrm T}r_k}{\delta_k^{2}}z_kz_k^{\mathrm T}.
 $$
 
 其中 **初始点 $\displaystyle x_0$ 与初始矩阵 $\displaystyle H_0$ 由用户在程序启动时给定**；题目将 $\displaystyle \alpha_k=1$ 作为常见的基准步长，要求在具有已知局部极小点的经典测试函数上检验算法。 $\displaystyle H_k$ 近似逆 Hessian 矩阵， $\displaystyle z_k$ 在研究报告中改记为 $\displaystyle s_k$，二者指同一位移向量。
@@ -126,21 +108,13 @@ $$
 令 $\displaystyle s_k=x_{k+1}-x_k$， $\displaystyle y_k=g_{k+1}-g_k$， $\displaystyle \rho_k=(s_k^{\mathrm T}y_k)^{-1}$。标准逆 BFGS 的紧凑更新为
 
 $$
-\begin{aligned}
-H_{k+1}={}&(I-\rho_ks_ky_k^{\mathrm T})H_k
-(I-\rho_ky_ks_k^{\mathrm T})\\
-&+\rho_ks_ks_k^{\mathrm T}.
-\end{aligned}
+H_{k+1}=(I-\rho_ks_ky_k^{\mathrm T})H_k(I-\rho_ky_ks_k^{\mathrm T})+\rho_ks_ks_k^{\mathrm T}.
 $$
 
 设 $\displaystyle r_k=s_k-H_ky_k$、 $\displaystyle \delta_k=s_k^{\mathrm T}y_k$，则等价的展开更新是
 
 $$
-\begin{aligned}
-H_{k+1}={}&H_k
-+\frac{r_ks_k^{\mathrm T}+s_kr_k^{\mathrm T}}{\delta_k}\\
-&-\frac{y_k^{\mathrm T}r_k}{\delta_k^2}s_ks_k^{\mathrm T}.
-\end{aligned}
+H_{k+1}=H_k+\frac{r_ks_k^{\mathrm T}+s_kr_k^{\mathrm T}}{\delta_k}-\frac{y_k^{\mathrm T}r_k}{\delta_k^{2}}s_ks_k^{\mathrm T}.
 $$
 
 在精确算术且分母非零时，上述更新满足**割线条件** $\displaystyle H_{k+1}y_k=s_k$。若 $\displaystyle H_k\succ0$ 且 $\displaystyle s_k^{\mathrm T}y_k>0$，标准 BFGS 更新保持正定性。采用下降方向和满足相应条件的 Wolfe 线搜索可以保证所需的正曲率；这并不意味着报告中所有实验都采用 Wolfe 搜索。
@@ -150,21 +124,13 @@ $$
 令 $\displaystyle r=s-Hy$、 $\displaystyle \delta=s^{\mathrm T}y\ne0$。报告研究如下实验性带权修正：
 
 $$
-\begin{aligned}
-H_+^{(a,b)}={}&H
-+a\frac{rs^{\mathrm T}+sr^{\mathrm T}}{\delta}\\
-&-b\frac{y^{\mathrm T}r}{\delta^2}ss^{\mathrm T}.
-\end{aligned}
+H_+^{(a,b)}=H+a\frac{rs^{\mathrm T}+sr^{\mathrm T}}{\delta}-b\frac{y^{\mathrm T}r}{\delta^{2}}ss^{\mathrm T}.
 $$
 
 当 $\displaystyle a=b=1$ 时回到标准 BFGS。一般权重下，其割线残差可写成
 
 $$
-\begin{aligned}
-H_+^{(a,b)}y-s
-={}&(a-1)r\\
-&+(a-b)\frac{y^{\mathrm T}r}{\delta}s.
-\end{aligned}
+H_+^{(a,b)}y-s=(a-1)r+(a-b)\frac{y^{\mathrm T}r}{\delta}s.
 $$
 
 因此，非标准权重**一般不保留**标准 BFGS 的割线条件和正定性保证。软件中将其作为需要诊断的实验方案，而不是未经证明的等价 BFGS 方法。
@@ -175,12 +141,12 @@ $$
 
 | 测试编号 | 数学类型 | 允许维数 | 已知极小点 |
 |:---|:---|:---|:---|
-| **B-01** | 正定三对角二次函数 | $\displaystyle n\ge 1$ | $\displaystyle x^*=\mathbf{1}$ |
-| **B-02** | 可调整条件数的对角二次函数 | $\displaystyle n\ge 1$ | $\displaystyle x^*=\mathbf{1}$ |
-| **B-03** | 二维 Rosenbrock 函数 | $\displaystyle n=2$ | $\displaystyle x^*=(1,1)$ |
+| **B-01** | 正定三对角二次函数 | $\displaystyle n\geqslant 1$ | $\displaystyle x^{\ast}=\mathbf{1}$ |
+| **B-02** | 可调整条件数的对角二次函数 | $\displaystyle n\geqslant 1$ | $\displaystyle x^{\ast}=\mathbf{1}$ |
+| **B-03** | 二维 Rosenbrock 函数 | $\displaystyle n=2$ | $\displaystyle x^{\ast}=(1,1)$ |
 | **B-04** | 二维 Himmelblau 函数 | $\displaystyle n=2$ | 四个已知局部极小点 |
-| **B-05** | 分块 Rosenbrock 函数 | $\displaystyle n$ 为正偶数 | $\displaystyle x^*=\mathbf{1}$ |
-| **B-06** | 分块 Powell singular 函数 | $\displaystyle n$ 为 4 的正整数倍 | $\displaystyle x^*=\mathbf{0}$ |
+| **B-05** | 分块 Rosenbrock 函数 | $\displaystyle n$ 为正偶数 | $\displaystyle x^{\ast}=\mathbf{1}$ |
+| **B-06** | 分块 Powell singular 函数 | $\displaystyle n$ 为 4 的正整数倍 | $\displaystyle x^{\ast}=\mathbf{0}$ |
 
 各函数的完整表达式及参数定义如下，保持与程序实现相同的数学约定。
 
@@ -271,7 +237,7 @@ flowchart TD
 | F6 | 重复运行与性能 | 30 | 10 | 运行稳定性、迭代及计算成本 |
 | **合计** | **全部原科学运行** | **246** | **61** | **统计来自固定设计与参考 Linux baseline** |
 
-**读图原则：**这里的 success 指软件定义的两类正式成功终止状态；其余 185 个运行也已执行并记录了诸如分母过小、非正定或线搜索预算耗尽等**有意义的终止状态**。这不是“185 次程序崩溃”，更不能解释为标准 BFGS 在一般优化问题上的失败率。
+<strong>读图原则：</strong>这里的 success 指软件定义的两类正式成功终止状态；其余 185 个运行也已执行并记录了诸如分母过小、非正定或线搜索预算耗尽等<strong>有意义的终止状态</strong>。这不是“185 次程序崩溃”，更不能解释为标准 BFGS 在一般优化问题上的失败率。
 
 <details>
 <summary><strong>九类正式 terminal status 与原数据分布</strong></summary>
@@ -334,10 +300,10 @@ flowchart TD
 <details>
 <summary><strong>推荐的 4 条阅读路线</strong></summary>
 
-**快速了解（15–20 分钟）：**本 README → 中文摘要 → 论文第 1、6 节 → 软件截图。  
-**数学理论：**第 2.1–2.5 节 → 附录 A → 第 4.3–4.8 节核对有限精度现象。  
-**数值研究：**第 4.1–4.8 节 → 附录 B → 软件实验数据与 selected-run reproduction。  
-**软件实现：**第 3 节 → BFGS-Lab 的 Implementation 页面 → `app/src/s6_bfgs/` → 两组 batch runner。
+<strong>快速了解（15–20 分钟）：</strong>本 README → 中文摘要 → 论文第 1、6 节 → 软件截图。  
+<strong>数学理论：</strong>第 2.1–2.5 节 → 附录 A → 第 4.3–4.8 节核对有限精度现象。  
+<strong>数值研究：</strong>第 4.1–4.8 节 → 附录 B → 软件实验数据与 selected-run reproduction。  
+<strong>软件实现：</strong>第 3 节 → BFGS-Lab 的 Implementation 页面 → `app/src/s6_bfgs/` → 两组 batch runner。
 
 </details>
 
@@ -405,7 +371,7 @@ flowchart LR
 </table>
 </div>
 
-**下载方式：**两份论文与两套 LaTeX 源码直接点击上表；软件 ZIP 请进入 [Releases](https://github.com/Bluevarpi/BFGS-Lab/releases) 下载对应版本的二进制附件。软件约 130 MiB，超过 GitHub 普通 Git 文件的 100 MiB 单文件限制，因此**不存放于仓库普通提交中**。不要通过 `git add` 把它提交进 Git 历史。
+<strong>下载方式：</strong>两份论文与两套 LaTeX 源码直接点击上表；软件 ZIP 请进入 [Releases](https://github.com/Bluevarpi/BFGS-Lab/releases) 下载对应版本的二进制附件。软件约 130 MiB，超过 GitHub 普通 Git 文件的 100 MiB 单文件限制，因此**不存放于仓库普通提交中**。不要通过 `git add` 把它提交进 Git 历史。
 
 ### 仓库结构
 
@@ -441,7 +407,7 @@ BFGS-Lab/
 4. 在 Optimization 页面选择测试函数、输入 $\displaystyle x_0$ 和 $\displaystyle H_0$、设置更新方式/步长后启动运行；在 Visualizer、Reproduction、Experiment Data 等页面进一步检查。
 5. 新导出与本地复现结果保存在 `app/workspace/`；历史冻结数据位于 `app/outputs/` 与 `app/baseline/`，不应直接修改。
 
-**系统要求：**历史报告记载 Windows 11 x64 原生测试，便携环境为自带 Python 3.13 运行时和所需第三方包。Windows 10 x64 兼容性应在目标设备上另行确认；macOS/Linux **不能直接运行该 Windows 内置运行时**。若企业安全策略禁用 VBScript，可使用同包内的 `.bat` 调试入口，不应关闭系统防护功能。
+<strong>系统要求：</strong>历史报告记载 Windows 11 x64 原生测试，便携环境为自带 Python 3.13 运行时和所需第三方包。Windows 10 x64 兼容性应在目标设备上另行确认；macOS/Linux **不能直接运行该 Windows 内置运行时**。若企业安全策略禁用 VBScript，可使用同包内的 `.bat` 调试入口，不应关闭系统防护功能。
 
 ### 7.2 执行一次可核查的单项实验
 
@@ -498,7 +464,7 @@ BFGS-Lab Portable/
 
 两套 ZIP 均以 `main.tex` 为主入口，直接编译所需目录保留为 `sections/`、`styles/`、`figures/`、`diagrams/`、`generated_appendix_b/`、`code_snippets/`，以及 `font_profile.tex` 和 `references.bib`。
 
-**特别说明：**三个 `code_snippets/*.py` 文件由论文的 `\lstinputlisting` 直接读取并印入附录；它们虽不是 `.tex`，仍属于**直接编译依赖**，不能因后缀为 Python 而删除。两份 LaTeX ZIP 不包含 `.pdf`、README、普通 CSV 原始实验数据库、表格生成 Python 工具、编译缓存或字体文件。数据的机器可读全量附件由**软件 ZIP**提供；论文表格所需的已生成 `.tex` 已保留在源码 ZIP 中。
+<strong>特别说明：</strong>三个 `code_snippets/*.py` 文件由论文的 `\lstinputlisting` 直接读取并印入附录；它们虽不是 `.tex`，仍属于**直接编译依赖**，不能因后缀为 Python 而删除。两份 LaTeX ZIP 不包含 `.pdf`、README、普通 CSV 原始实验数据库、表格生成 Python 工具、编译缓存或字体文件。数据的机器可读全量附件由**软件 ZIP**提供；论文表格所需的已生成 `.tex` 已保留在源码 ZIP 中。
 
 ### 使用 XeLaTeX / Biber
 
@@ -510,7 +476,7 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 
 需要人工执行时使用 `xelatex → biber main → xelatex → xelatex`，直至引用稳定。字体采用 TeX Live / 系统提供的 CMU 及 Fandol 兼容资源，不随仓库重新分发第三方字体。
 
-**构建核验：**两套各含 45 个编译依赖文件的源码工程均已使用 XeLaTeX + Biber 编译为 **33 页 PDF**，未报告未定义引用。既有 Windows TeX Live 2025 验收记录中，俄文报告有一处约 **5.24 pt 的 `Overfull \hbox`** 排版警告，不影响 PDF 生成。此项核验独立于 Windows 桌面软件的运行兼容性。
+<strong>构建核验：</strong>两套各含 45 个编译依赖文件的源码工程均已使用 XeLaTeX + Biber 编译为 **33 页 PDF**，未报告未定义引用。既有 Windows TeX Live 2025 验收记录中，俄文报告有一处约 **5.24 pt 的 `Overfull \hbox`** 排版警告，不影响 PDF 生成。此项核验独立于 Windows 桌面软件的运行兼容性。
 
 <a id="qa"></a>
 ## 九、发行 QA、可复现性与已知限制
@@ -539,7 +505,7 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 
 </details>
 
-**已知界面限制：**Windows GUI 的语言切换功能可以使用，但 Settings 页“绘图质量”下拉框的当前取值可能沿用切换前的俄文标签；这是显示文本的刷新问题，不影响算法计算或历史实验结果。
+<p><strong>已知界面限制：</strong>Windows GUI 的语言切换功能可以使用，但 Settings 页“绘图质量”下拉框的当前取值可能沿用切换前的俄文标签；这是显示文本的刷新问题，不影响算法计算或历史实验结果。</p>
 
 ### 安全、许可及出处
 
@@ -563,8 +529,6 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 </div>
 
 欢迎通过 [Issues](https://github.com/Bluevarpi/BFGS-Lab/issues) 报告**可复现的** BFGS 数学、算法实现、数值实验身份映射、LaTeX 构建或便携运行问题。建议同时提供问题编号/Run ID、操作系统、Python/BLAS 环境、步长与更新配置、实际终止状态以及可复现的最小步骤。
-
-**相关仓库：**[本科数学课程资料库 · smbu-vmk-math](https://github.com/Bluevarpi/smbu-vmk-math) · [泛函分析自学书 · FA-Book](https://github.com/Bluevarpi/FA-Book)。
 
 <div align="center">
 
