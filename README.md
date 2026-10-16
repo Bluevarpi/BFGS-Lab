@@ -19,7 +19,7 @@
 <p>
   <img src="https://img.shields.io/badge/Method-BFGS-356FAF?style=flat-square" alt="BFGS">
   <img src="https://img.shields.io/badge/Reports-2%20%C3%97%2033%20pages-334155?style=flat-square" alt="两份33页报告">
-  <img src="https://img.shields.io/badge/LaTeX-XeLaTeX%20%2B%20Biber-32838D?style=flat-square&logo=latex&logoColor=white" alt="编译工具链">
+  <img src="https://img.shields.io/badge/LaTeX-XeLaTeX%20%2F%20LuaLaTeX-32838D?style=flat-square&logo=latex&logoColor=white" alt="双编译器工具链：俄文 XeLaTeX，中文 LuaLaTeX">
   <img src="https://img.shields.io/badge/Scientific%20core-Python-438B64?style=flat-square&logo=python&logoColor=white" alt="Python数学实现">
   <img src="https://img.shields.io/badge/GUI-Tkinter%20%2B%20Matplotlib-586CB7?style=flat-square" alt="GUI架构">
 </p>
@@ -368,8 +368,8 @@ flowchart LR
 <tr><th align="left">项目资源</th><th align="left">GitHub 入口</th><th align="left">内容和用途</th></tr>
 <tr><td><strong>中文论文</strong></td><td><a href="./papers/BFGS_zh.pdf">BFGS_zh.pdf</a></td><td>33 页中文研究报告，可直接阅读</td></tr>
 <tr><td><strong>俄文论文</strong></td><td><a href="./papers/BFGS_ru.pdf">BFGS_ru.pdf</a></td><td>33 页俄文研究报告，可直接阅读</td></tr>
-<tr><td><strong>中文 LaTeX</strong></td><td><a href="./source/BFGS_zh_LaTeX_Source.zip">BFGS_zh_LaTeX_Source.zip</a></td><td>45 个直接参与编译的源码/插图/引用文件</td></tr>
-<tr><td><strong>俄文 LaTeX</strong></td><td><a href="./source/BFGS_ru_LaTeX_Source.zip">BFGS_ru_LaTeX_Source.zip</a></td><td>45 个直接参与编译的源码/插图/引用文件</td></tr>
+<tr><td><strong>中文 LaTeX</strong></td><td><a href="./source/BFGS_zh_LaTeX_Source.zip">BFGS_zh_LaTeX_Source.zip</a></td><td>59 个文件的完整工程：源码、插图、引用、附录表生成器与电子汇总数据</td></tr>
+<tr><td><strong>俄文 LaTeX</strong></td><td><a href="./source/BFGS_ru_LaTeX_Source.zip">BFGS_ru_LaTeX_Source.zip</a></td><td>58 个文件的完整工程：源码、插图、引用、附录表生成器与电子汇总数据</td></tr>
 <tr><td><strong>Windows 桌面软件</strong></td><td><a href="https://github.com/Bluevarpi/BFGS-Lab/releases/download/v1.0.0/BFGS_Lab_Portable_Software.zip">BFGS_Lab_Portable_Software.zip · Release v1.0.0</a></td><td>内置 Python 运行时、全部科学模块、存档数据与启动脚本</td></tr>
 <tr><td><strong>可视化与导航</strong></td><td><a href="./assets/readme/">assets/readme/</a></td><td>论文封面、真实软件截图、实验分组图及研究路线图</td></tr>
 </table>
@@ -466,21 +466,51 @@ BFGS-Lab Portable/
 <a id="latex"></a>
 ## 八、精简 LaTeX 源码与重新编译
 
-两套 ZIP 均以 `main.tex` 为主入口，直接编译所需目录保留为 `sections/`、`styles/`、`figures/`、`diagrams/`、`generated_appendix_b/`、`code_snippets/`，以及 `font_profile.tex` 和 `references.bib`. 
+两套 ZIP 均以 `main.tex` 为主入口，编译所需目录为 `sections/`、`styles/`、`figures/`、`diagrams/`、`generated_appendix_b/`、`code_snippets/`，以及 `font_profile.tex` 与 `references.bib`. 新版工程同时附带附录表生成器 `tools/generate_appendix_b_tables.py`、备用全量生成器 `tools/generate_appendix_b_tables_full.py`，以及电子汇总数据 `data/appendix_b_data/`，因此源码包本身即可完成附录表重生成与数据核对.
 
-<strong>特别说明：</strong>三个 `code_snippets/*.py` 文件由论文的 `\lstinputlisting` 直接读取并印入附录；它们虽不是 `.tex`，仍属于**直接编译依赖**，不能因后缀为 Python 而删除. 两份 LaTeX ZIP 不包含 `.pdf`、README、普通 CSV 原始实验数据库、表格生成 Python 工具、编译缓存或字体文件. 数据的机器可读全量附件由**软件 ZIP**提供；论文表格所需的已生成 `.tex` 已保留在源码 ZIP 中. 
+<strong>特别说明：</strong>三个 `code_snippets/*.py` 文件由论文的 `\lstinputlisting` 直接读取并印入附录；它们虽不是 `.tex`，仍属于**直接编译依赖**，不能因后缀为 Python 而删除. 源码 ZIP 不包含 `.pdf`、编译缓存或字体二进制文件；CMU 与 Fandol 字体由 TeX Live 提供，不随仓库重新分发.
 
-### 使用 XeLaTeX / Biber
+### 8.1 两套工程对照
 
-分别解压任意一个源码包，在有完整 TeX Live（包括 `fontspec`、`ctex`〔中文〕、`biblatex`、`tikz`、`tcolorbox` 等宏包和 CMU/Fandol 字体支持）的机器上，在包含 `main.tex` 的目录执行：
+| 项目 | 俄文工程 | 中文工程 |
+|:---|:---|:---|
+| 主文件 | `main.tex` | `main.tex` |
+| 编译器 | **XeLaTeX** | **LuaLaTeX** |
+| 参考文献 | Biber | Biber |
+| 正文字体 | CMU Serif | CMU Serif（西文 / 俄文）+ CTeX `fontset=fandol`（中文） |
+| 页面 | A4 竖版 | A4 竖版 |
+| 字号 / 行距 | 14 pt / 1.5 | 14 pt / 1.5 |
+| 自然段首行缩进 | 1.25 cm | `2\ccwd` |
+| 源码包成员数 | 58 | 59 |
+
+### 8.2 编译命令
+
+两套工程都需要完整的 TeX Live（含 `fontspec`、`ctex`〔中文〕、`biblatex`、`tikz`、`tcolorbox` 等宏包以及 CMU / Fandol 字体支持）. 解压后在包含 `main.tex` 的目录执行对应序列：
 
 ```bash
-latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
+# 俄文工程：XeLaTeX + Biber
+xelatex main.tex && biber main && xelatex main.tex && xelatex main.tex
 ```
 
-需要人工执行时使用 `xelatex → biber main → xelatex → xelatex`，直至引用稳定. 字体采用 TeX Live / 系统提供的 CMU 及 Fandol 兼容资源，不随仓库重新分发第三方字体. 
+```bash
+# 中文工程：LuaLaTeX + Biber
+lualatex main.tex && biber main && lualatex main.tex && lualatex main.tex
+```
 
-<strong>构建核验：</strong>两套各含 45 个编译依赖文件的源码工程均已使用 XeLaTeX + Biber 编译为 **33 页 PDF**，未报告未定义引用. 既有 Windows TeX Live 2025 验收记录中，俄文报告有一处约 **5.24 pt 的 `Overfull \hbox`** 排版警告，不影响 PDF 生成. 此项核验独立于 Windows 桌面软件的运行兼容性. 
+两套附录 B 均为竖版 `longtable`，不使用 `pdflscape` / `landscape`，重要表格可跨页.
+
+### 8.3 附录 B 与电子数据
+
+论文附录 B 采用**紧凑竖版 longtable**：纸面保留核心变量覆盖、全样本 aggregate 统计、代表性 Run ID、RQ-S1–RQ-S6、F4 strong-Wolfe bridge、本地复现结果与核心代码节选，而不再把 246 个 original runs 与 105 个 supplementary runs 的全部重复标量字段逐页展开. 完整 machine-readable 汇总保存在源码包的 `data/appendix_b_data/`；更细的逐迭代与线搜索轨迹在完整科研工程中按 Run ID 对应. 重新生成表格：
+
+```bash
+python tools/generate_appendix_b_tables.py --lang ru    # 俄文
+python tools/generate_appendix_b_tables.py --lang zh    # 中文
+```
+
+`tools/generate_appendix_b_tables_full.py` 为保留的“全量逐行展开”备用生成器. 代表性 run 只负责在纸面展示具体现象，**所有 aggregate 结论仍由完整 246 + 105 数据集计算得出**，并未因排版方式改变而减少实验数量或修改结论.
+
+<strong>构建核验：</strong>两套源码工程已在独立 TeX Live 2025 环境下分别实际编译：俄文使用 XeLaTeX + Biber，中文使用 LuaLaTeX + Biber，均完整通过并各生成 **33 页 A4 PDF**；最终编译日志中 LaTeX 错误、Overfull / Underfull、缺字与未定义引用均为 0. 该项核验独立于 Windows 桌面软件的运行兼容性.
 
 <a id="qa"></a>
 ## 九、发行 QA、可复现性与已知限制
@@ -488,8 +518,8 @@ latexmk -xelatex -interaction=nonstopmode -halt-on-error main.tex
 | 审核项 | 发行资料状态 | 证据范围 |
 |:---|:---|:---|
 | 中文 / 俄文论文 | 各 33 页 | 双语研究报告及完整数学正文 |
-| 中文 / 俄文 LaTeX ZIP | 各 45 个直接编译文件 | 保留 `\lstinputlisting` 实际引用的代码段文件 |
-| LaTeX 构建 | 两份均成功生成 33 页 PDF | Linux 与 Windows TeX Live 构建记录；俄文 Windows 构建含一处约 5.24 pt 的 `Overfull \hbox` 警告 |
+| 中文 / 俄文 LaTeX ZIP | 中文 59 个、俄文 58 个文件 | 保留 `\lstinputlisting` 实际引用的代码段文件，并含附录表生成器与电子汇总数据 |
+| LaTeX 构建 | 两份均成功生成 33 页 A4 PDF | 独立 TeX Live 2025 实测：俄文 XeLaTeX + Biber、中文 LuaLaTeX + Biber；最终日志零错误、零 Overfull / Underfull、零缺字 |
 | 软件 ZIP 完整性 | ZIP CRC 检测 PASS | 包含运行时、GUI、核心、实验程序、历史数据及第三方许可证 |
 | 工作目录与缓存 | 不包含既往运行的临时工作数据或 Python 缓存 | `app/workspace/` 可由程序启动时创建 |
 | Linux 科学核心单项检查 | Original `S5R-0011` 与 Supplementary `SUPP-R0001` 均成功执行 | 不等于 Windows 内置 Python 测试或 351 次整批实验 |
